@@ -9,6 +9,8 @@
 
 /* Size of the list to sort. */
 constexpr std::size_t LIST_SIZE = 10000;
+/* */
+constexpr std::size_t NUMBER_OF_SAMPLES = 1;
 
 using namespace std;
 
@@ -364,25 +366,15 @@ int main()
 
 	srand(0);
 
-	std::vector<int> a{ 0, 1, 2, 3, 4, 5 };
-	cout << a.size() << endl;
-	std::vector<int> b{ 11, 11, 11 };
-	std::vector<int> c;
-	c.reserve(a.size());
-	c.insert(c.end(), a.begin() + 1, a.begin() + 3);
-	printList(a);
-	printList(c);
-	cout << "--------" << endl;
-	timsort(a);
-	printList(a);
+	cout << "Sorting functions are going to be measured...\n";
 
 	// Create structs with sort functions
 	std::vector<SortFunc> sortFuncs
 	{
-		//{ VAR_TO_STR(selectionSort), selectionSort },
-		//{ VAR_TO_STR(selectionSortOptimized), selectionSortOptimized },
-		//{ VAR_TO_STR(bubblesort), bubblesort },
-		//{ VAR_TO_STR(bubblesortSwap), bubblesortStdSwap },
+		{ VAR_TO_STR(selectionSort), selectionSort },
+		{ VAR_TO_STR(selectionSortOptimized), selectionSortOptimized },
+		{ VAR_TO_STR(bubblesort), bubblesort },
+		{ VAR_TO_STR(bubblesortSwap), bubblesortStdSwap },
 		{ VAR_TO_STR(insertionSort), insertionSort },
 		{ VAR_TO_STR(mergesortRecursive), mergesortRecursive },
 		{ VAR_TO_STR(mergesortIterative), mergesortIterative },
@@ -394,7 +386,9 @@ int main()
 	std::vector<int> list, copyList;
 
 	// Measure time of each sort function
-	for (int i = 0; i < 1; i++)
+	int n = 0;
+	cout << "(0/" << sortFuncs.size() * NUMBER_OF_SAMPLES << ")";
+	for (int i = 0; i < NUMBER_OF_SAMPLES; i++)
 	{
 		list.clear();
 		list.reserve(LIST_SIZE);
@@ -411,8 +405,12 @@ int main()
 			if (!checkList(list))
 				cout << "Not in order: " << VAR_TO_STR(sortFunc.name) << "\n";
 			list = copyList;
+
+			cout << "\r(" << ++n << "/" << sortFuncs.size() * NUMBER_OF_SAMPLES << ")";
 		}
 	}
+
+	cout << "\n\nResults:\n\n";
 
 	// Calculate mean duration for each function and print results
 	for (SortFunc& sortFunc : sortFuncs)
